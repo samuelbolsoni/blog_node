@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const slugify = require('slugify');
+
 require("../models/Categoria")
 require("../models/Postagem")
 const Categoria = mongoose.model("categorias")
@@ -8,6 +10,16 @@ const Postagem = mongoose.model("postagens")
 
 const {isAdmin} = require("../helpers/isadmin")
 
+// Config your options
+const options = {
+    replacement: '-', // replace spaces with replacement character, defaults to `-`
+    remove: undefined, // remove characters that match regex, defaults to `undefined`
+    lower: true, // convert to lower case, defaults to `false`
+    strict: true, // strip special characters except replacement, defaults to `false`
+    locale: 'en', // language code of the locale to use
+  };
+
+// Rotas
 router.get('/',(req, res) => {
     res.render("admin/index")
 })
@@ -39,18 +51,13 @@ router.post('/categorias/nova', isAdmin, (req,res) => {
         })
     }
 
-    if (!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null) {
-        erros.push({
-            texto: "Slug inválido"
-        })
-    }
-
     if (erros.length > 0) {
         res.render("admin/addcategorias", {erros: erros})
     } else {
+        var slugTitle = slugify(req.body.nome, options);
         const nova_categoria = {
             nome: req.body.nome,
-            slug: req.body.slug
+            slug: slugTitle
         }
     
         new Categoria(nova_categoria)
@@ -80,11 +87,13 @@ router.get("/categorias/edit/:id", isAdmin, (req, res) => {
 
 router.post("/categorias/edit", isAdmin, (req, res) => {
 
+    var slugTitle = slugify(req.body.nome, options);
+
     Categoria
         .findOne({_id: req.body.id})
         .then((categoria) => {
             categoria.nome = req.body.nome
-            categoria.slug = req.body.slug
+            categoria.slug = slugTitle
 
             categoria
                 .save()
@@ -154,9 +163,10 @@ router.post('/postagens/nova', isAdmin, (req,res) => {
     if (erros.length > 0) {
         res.render("admin/addpostagens", {erros: erros})
     } else {
+
         const nova_postagem = {
             titulo: req.body.titulo,
-            slug: req.body.slug,
+            slug: slugify(req.body.titulo, options),
             descricao: req.body.descricao,
             conteudo: req.body.conteudo,
             categoria: req.body.categoria
@@ -177,13 +187,13 @@ router.post('/postagens/nova', isAdmin, (req,res) => {
 
 router.get("/postagens/edit/:id", isAdmin,(req, res) => {
     
-    
     Postagem
         .findOne({_id: req.params.id})
         .then((postagem) => {
             Categoria
                 .find()
                 .then((categorias) => {
+                    console.log(postagem);
                     res.render("admin/editpostagens", {postagem: postagem, categorias: categorias})
                 })
         })
@@ -199,7 +209,7 @@ router.post("/postagens/edit", isAdmin, (req, res) => {
         .findOne({_id: req.body.id})
         .then((postagem) => {
             postagem.titulo = req.body.titulo
-            postagem.slug = req.body.slug
+            postagem.slug = slugify(req.body.titulo, options)
             postagem.descricao = req.body.descricao
             postagem.conteudo = req.body.conteudo
             postagem.categoria = req.body.categoria

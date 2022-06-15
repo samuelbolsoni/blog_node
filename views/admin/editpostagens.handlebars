@@ -21,7 +21,7 @@
             <select name="categoria" id="categoria" class="form-select">
                 <option value=""></option>
                 {{#each categorias}}
-                    <option value="{{_id}}">{{nome}}</option>
+                    <option value="{{_id}}" {{#ifEquals _id postagem.categoria}} selected="selected" {{/ifEquals}}>{{postagem.categoria}}</option>
                 {{else}}
                 <option value="0">Nenhuma categoria registrada</option>
                 {{/each}}
