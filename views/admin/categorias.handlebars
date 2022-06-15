@@ -1,20 +1,27 @@
 <h2>Lista de categorias</h2>
 <hr>
-<a href="/admin/categorias/add"><button class="btn btn-success">Nova categoria</button></a>
 
-{{#each categorias}}
-<div class="card">
-    <div class="card-body">
-        <h4>{{nome}}</h4>
-        <small>{{slug}}</small><br>
-        <small>{{date}}</small><br>
-        <a href="/admin/categorias/edit/{{_id}}"><button class="btn btn-success mt-2">Editar categoria</button></a>
-        <form action="/admin/categorias/deletar" method="post">
+<a href="/admin/categorias/add"><button class="btn btn-outline-success">Nova categoria</button></a>
+
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th class="text-center">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categorias}}
+    <tr>
+      <th class="text-nowrap" scope="row">{{nome}}</th>
+      <td><a href="/admin/categorias/edit/{{_id}}"><button class="btn btn-outline-warning" style="float: left; margin-right: 10px;">Editar</button></a>
+      <form action="/admin/categorias/deletar" method="post">
             <input type="hidden" name="id" value="{{_id}}">
-            <button type="submit" class="btn btn-danger mt-4">Deletar categoria</button>
-        </form>
-    </div>
-</div>
-{{else}}
+            <button type="submit" class="btn btn-outline-danger">Deletar</button>
+        </form></td>
+    </tr>
+    {{else}}
     <h4 class="mt-4">Nenhuma categoria registrada</h4>
-{{/each}}
+    {{/each}}    
+  </tbody>
+</table>

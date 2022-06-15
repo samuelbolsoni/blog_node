@@ -1,24 +1,20 @@
 <div class="jumbotron">
   <h1 class="display-4">Bem vindo ao Blog NodeJS</h1>
-  <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-  <hr class="my-4">
-  <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-  <p class="lead">
-    <a class="btn btn-primary btn-lg" href="#" role="button">Crie uma conta</a>
-  </p>
+  <p class="lead">Blog desenvolvido em NodeJS | Bootstrap | MongoDB</p>
 </div>
 <hr>
 
-<h2>Postagens recentes</h2>
+<h2>Postagens</h2>
 
 {{#each postagens}}
 <div class="card mt-4">
     <div class="card-body">
+      <small>{{categoria.nome}}</small>
         <h3>{{titulo}}</h3>
+        
         <p>{{descricao}}</p>
         <a href="/postagens/{{slug}}"> <button class="btn btn-success">Leia mais</button></a>
         <hr>
-        <small>{{categoria.nome}}</small>
         <small>{{data}}</small>
     </div>
 </div>

@@ -38,6 +38,16 @@ require("./config/auth")(passport)
 
     app.use(flash())
 
+    //Middleware
+    app.use((req,res, next) => {
+        res.locals.success_msg = req.flash("success_msg")
+        res.locals.error_msg = req.flash("error_msg")
+        res.locals.error = req.flash("error")
+        res.locals.user = req.user || null
+        res.locals.current_url = req.originalUrl
+        next()
+    })
+    
     //Body Parser
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(bodyParser.json())
@@ -52,20 +62,16 @@ require("./config/auth")(passport)
     }));
 
     app.set('view engine', 'handlebars')
+    var handlebars = require('handlebars');
 
-    //Middleware
-    app.use((req,res, next) => {
-        res.locals.success_msg = req.flash("success_msg")
-        res.locals.error_msg = req.flash("error_msg")
-        res.locals.error = req.flash("error")
-        res.locals.user = req.user || null
-        next()
-    })
+    handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+        return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+    });
 
     //Mongoose
     mongoose.Promise = global.Promise
 
-    mongoose.connect("mongodb://localhost/blogapp").then(() => {
+    mongoose.connect("mongodb://127.0.0.1/blogapp").then(() => {
         console.log("Conectado ao MongoDB")
     }).catch((erro) => {
         console.log("Erro ao conectar no mongoDB " + erro)
